@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programs | Calisthenics Minimal</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #f9f9f9;
+            --surface-color: #ffffff;
+            --text-main: #394250; 
+            --text-muted: #797e88; 
+            --accent-primary: #415a71; 
+            --accent-secondary: #a89b87; 
+            --border-color: rgba(121, 126, 136, 0.2);
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1e242c; 
+            --surface-color: #2b333e; 
+            --text-main: #f9f9f9;
+            --text-muted: #a89b87; 
+            --accent-primary: #797e88; 
+            --accent-secondary: #415a71; 
+            --border-color: rgba(249, 249, 249, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Inter', 'Prompt', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- Header --- */
+        header {
+            padding: 1.5rem 10%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--surface-color);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-main);
+            text-decoration: none;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-left: 2.5rem;
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+
+        nav a.active {
+            color: var(--accent-primary);
+            font-weight: 500;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.5rem 1rem;
+            margin-left: 2.5rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* --- Page Header & Tabs --- */
+        .page-header {
+            text-align: center;
+            padding: 4rem 10% 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2.8rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin: 0 0 1rem 0;
+        }
+
+        .level-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .level-btn {
+            background-color: var(--surface-color);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            padding: 0.8rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .level-btn:hover {
+            color: var(--accent-primary);
+            border-color: var(--accent-primary);
+        }
+
+        .level-btn.active {
+            background-color: var(--accent-primary);
+            color: var(--bg-color);
+            border-color: var(--accent-primary);
+        }
+
+        /* --- Level Content --- */
+        .level-content {
+            display: none;
+            padding: 2rem 10% 6rem;
+            max-width: 1000px; /* ปรับให้พอดีกับการ์ดแนวนอน */
+            margin: 0 auto;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .level-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .level-description {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 4rem;
+            font-weight: 300;
+            font-size: 1.1rem;
+        }
+
+        /* เปลี่ยนเป็นแนวตั้ง (Stack) เพราะการ์ดแนวนอนใช้พื้นที่กว้าง */
+        .exercise-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* เลย์เอาต์ซ้าย-ขวา */
+        .exercise-card {
+            background-color: var(--surface-color);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            display: flex; /* เปิดใช้ Flexbox */
+            align-items: stretch;
+        }
+
+        .exercise-info {
+            flex: 1.2; /* ให้ฝั่งข้อความกว้างกว่านิดหน่อย */
+            padding: 3rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .exercise-info h3 {
+            margin: 0 0 0.5rem 0;
+            color: var(--text-main);
+            font-size: 1.4rem;
+            font-weight: 500;
+        }
+
+        .exercise-info p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+            line-height: 1.7;
+        }
+
+        .exercise-target {
+            background-color: var(--bg-color);
+            color: var(--accent-secondary);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            border: 1px solid var(--border-color);
+        }
+
+        .exercise-gif {
+            flex: 1; /* ความกว้างฝั่งรูป */
+            min-height: 250px;
+            background-color: var(--bg-color);
+            position: relative;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .exercise-gif img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        /* Responsive มือถือให้เรียงบน-ล่าง */
+        @media (max-width: 768px) {
+            .exercise-card {
+                flex-direction: column-reverse; /* ข้อความอยู่ล่าง รูปอยู่บน */
+            }
+            .exercise-gif {
+                min-height: 220px;
+                border-left: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            .exercise-info {
+                padding: 2rem 1.5rem;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem;
+            background-color: var(--surface-color);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo">Calisthenics</a>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="basics.html">Basics</a>
+            <a href="programs.html" class="active">Programs</a>
+            <a href="articles.html">Articles</a>
+            <button class="theme-toggle" id="themeBtn">
+                <span id="themeIcon">🌙</span> <span id="themeText">Dark</span>
+            </button>
+        </nav>
+    </header>
+
+    <div class="page-header">
+        <h1>Training Programs</h1>
+        <div class="level-tabs">
+            <button class="level-btn active" onclick="showLevel('lv0')">Lv. 0 Rehab</button>
+            <button class="level-btn" onclick="showLevel('lv1')">Lv. 1 Beginner</button>
+            <button class="level-btn" onclick="showLevel('lv2')">Lv. 2 Novice</button>
+            <button class="level-btn" onclick="showLevel('lv3')">Lv. 3 Intermediate</button>
+            <button class="level-btn" onclick="showLevel('lv4')">Lv. 4 Advanced</button>
+            <button class="level-btn" onclick="showLevel('lv5')">Lv. 5 Master</button>
+        </div>
+    </div>
+
+    <!-- ส่วนเนื้อหา Lv.0 -->
+    <section id="lv0" class="level-content active">
+        <p class="level-description">ระดับเริ่มต้นที่แท้จริง เหมาะสำหรับผู้ที่ไม่เคยออกกำลังกายมาก่อน หรือกำลังฟื้นฟูร่างกาย เน้นการขยับข้อต่อและการสร้างการรับรู้ของกล้ามเนื้อ</p>
+        <div class="exercise-grid">
+            <div class="exercise-card">
+                <div class="exercise-info">
+                    <h3>Wall Push-Ups</h3>
+                    <p>วิดพื้นกับกำแพง เพื่อสร้างความคุ้นเคยกับการใช้กล้ามเนื้อหน้าอกและหลังแขนโดยรับน้ำหนักน้อยที่สุด</p>
+                    <span class="exercise-target">3 SETS / 15 REPS</span>
+                </div>
+                <div class="exercise-gif">
+                    <img src="https://fitnessprogramer.com/wp-content/uploads/2021/06/Narrow-Grip-Wall-Push-Up.gif" alt="Wall Push Up">
+                </div>
+            </div>
+            <div class="exercise-card">
+                <div class="exercise-info">
+                    <h3>Dead Hang</h3>
+                    <p>โหนบาร์ค้างไว้เฉยๆ เพื่อสร้างแรงบีบมือ (Grip Strength) และยืดเหยียดข้อต่อหัวไหล่</p>
+                    <span class="exercise-target">3 SETS / 30 SEC</span>
+                </div>
+                <div class="exercise-gif">
+                    <img src="https://fitnessprogramer.com/wp-content/uploads/2021/02/dead-hang.png" alt="Dead Hang">
+                </div>
+            </div>
+            <!-- ท่าใหม่ -->
+            <div class="exercise-card">
+                <div class="exercise-info">
+                    <h3>Incline Rows</h3>
+                    <p>ดึงข้อแบบเฉียง โดยใช้บาร์ระดับเอว เท้ายันพื้น ช่วยสร้างกล้ามเนื้อหลังโดยไม่ต้องดึงน้ำหนักตัวเต็มๆ</p>
+                    <span class="exercise-target">3 SETS / 10 REPS</span>
+                </div>
+                <div class="exercise-gif">
+                    <img src="https://fitnessprogramer.com/wp-content/uploads/2021/04/Incline-Row.gif" alt="Incline Rows">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ส่วนเนื้อหา Lv.1 -->
+    <section id="lv1" class="level-content">
+        <p class="level-description">เริ่มเข้าสู่การรับน้ำหนักตัวมากขึ้น เหมาะสำหรับคนที่เริ่มมีพื้นฐานมาบ้าง เน้นการควบคุมจังหวะลง (Negative Movement)</p>
+        <div class="exercise-grid">
+            <div class="exercise-card">
+                <div class="exercise-info">
+                    <h3>Knee Push-Ups</h3>
+                    <p>วิดพื้นแบบวางเข่า ช่วยลดน้ำหนักตัวลง 50% เน้นการเกร็งหน้าท้องและรักษาแนวสันหลังให้ตรง</p>
+                    <span class="exercise-target">3 SETS / 10 REPS</span>
+                </div>
+                <div class="exercise-gif">
+                    <img src="https://fitnessprogramer.com/wp-content/uploads/2021/06/Knee-Push-Up.gif" alt="Knee Push Up">
+                </div>
+            </div>
+            <div class="exercise-card">
+                <div class="exercise-info">
+                    <h3>Negative Pull-Ups</h3>
+                    <p>กระโดดขึ้นไปเกยคางเหนือระดับบาร์ แล้วค่อยๆ เกร็งตัวต้านแรงโน้มถ่วงลงมาช้าๆ</p>
+                    <span class="exercise-target">3 SETS / 5 REPS</span>
+                </div>
+                <div class="exercise-gif">
+                    <img src="https://fitnessprogramer.com/wp-content/uploads/2021/02/Negative-Pull-Up.gif" alt="Negative Pull Up">
+                </div>
+            </div>
+            <!-- ท่าใหม่ -->
+            <div class="exercise-card">
+                <div class="exercise-info">
+                    <h3>Bench Dips</h3>
+                    <p>ใช้มือดันกับขอบเก้าอี้หรือม้านั่ง ขาเหยียดตรงหรือชันเข่า ช่วยเน้นความแข็งแรงของกล้ามเนื้อหลังแขน (Triceps)</p>
+                    <span class="exercise-target">3 SETS / 12 REPS</span>
+                </div>
+                <div class="exercise-gif">
+                    <img src="https://fitnessprogramer.com/wp-content/uploads/2021/04/CHAIR-DIPS.gif" alt="Bench Dips">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ส่วนเนื้อหา Lv.2 -->
+    <section id="lv2" class="level-content">
+        <p class="level-description">ท่าพื้นฐานมาตรฐาน (The Basics) ร่างกายสามารถรองรับน้ำหนักตัวได้ 100% ในท่าหลักๆ</p>
+        <div class="exercise-grid">
+            <div class="exercise-card">
+                <div class="exercise-info">
+                    <h3>Standard Push-Ups</h3>
+                    <p>วิดพื้นมาตรฐาน ขาตึง เกร็งก้น อกลงลึกสุดและดันขึ้นจนสุด</p>
+                    <span class="exercise-target">4 SETS / 12 REPS</span>
+                </div>
+                <div class="exercise-gif">
+                    <img src="https://fitnessprogramer.com/wp-content/uploads/2021/02/Standard-Push-Up.gif" alt="Standard Push Up">
+                </div>
+            </div>
+            <div class="exercise-card">
+                <div class="exercise-info">
+                    <h3>Strict Pull-Ups</h3>
+                    <p>ดึงข้อโดยไม่ใช้แรงเหวี่ยง เริ่มต้นจากแขนตึงสุด และดึงจนคางพ้นบาร์</p>
+                    <span class="exercise-target">4 SETS / 8 REPS</span>
+                </div>
+                <div class="exercise-gif">
+                    <img src="https://fitnessprogramer.com/wp-content/uploads/2021/02/Strict-Pull-Up.gif" alt="Pull Up">
+                </div>
+            </div>
+            <!-- ท่าใหม่ -->
+            <div class="exercise-card">
+                <div class="exercise-info">
+                    <h3>Hanging Knee Raises</h3>
+                    <p>โหนบาร์แล้วดึงหัวเข่าขึ้นมาแตะระดับอก สร้างความแข็งแรงให้แกนกลางลำตัวหน้าท้องส่วนล่าง</p>
+                    <span class="exercise-target">4 SETS / 15 REPS</span>
+                </div>
+                <div class="exercise-gif">
+                    <img src="https://fitnessprogramer.com/wp-content/uploads/2021/02/Hanging-Knee-Raises.gif" alt="Knee Raises">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ส่วนเนื้อหา Lv.3 -->
+    <section id="lv3" class="level-content">
+        <p class="level-description">เริ่มเข้าสู่การฝึกทักษะที่ใช้ความแข็งแรงรวม (Compound) และแกนกลางลำตัวสูงขึ้น</p>
+        <div class="exercise-grid">
+            <div class="exercise-card">
+                <div class="exercise-info">
+                    <h3>Parallel Bar Dips</h3>
+                    <p>ดิปบาร์คู่ เน้นความแข็งแรงของหน้าอกส่วนล่าง ไหล่หน้า และหลังแขน</p>
+                    <span class="exercise-target">4 SETS / 10 REPS</span>
+                </div>
+                <div class="exercise-gif">
+                    <img src="https://fitnessprogramer.com/wp-content/uploads/2021/04/Parallel-Bar-Dips.gif" alt="Parallel Bar Dips">
+                </div>
+            </div>
+            <div class="exercise-card">
+                <div class="exercise-info">
+                    <h3>L-Sit Hold</h3>
+                    <p>พยุงตัวยกขาลอยจากพื้นขนานเป็นรูปตัว L สร้างความแข็งแรงของแกนกลางและหน้าขา</p>
+                    <span class="exercise-target">3 SETS / 15 SEC</span>
+                </div>
+                <div class="exercise-gif">
+                    <img src="https://fitnessprogramer.com/wp-content/uploads/2021/04/L-Sit.gif" alt="L-Sit">
+                </div>
+            </div>
+            <!-- ท่าใหม่ -->
+            <div class="exercise-card">
+                <div class="exercise-info">
+                    <h3>Archer Push-Ups</h3>
+                    <p>วิดพื้นแบบกางแขนข้างหนึ่งเหยียดตึง เพิ่มภาระน้ำหนักไปยังแขนอีกข้าง เป็นทางผ่านสู่การวิดพื้นแขนเดียว</p>
+                    <span class="exercise-target">3 SETS / 6 REPS (PER SIDE)</span>
+                </div>
+                <div class="exercise-gif">
+                    <img src="https://fitnessprogramer.com/wp-content/uploads/2021/02/Archer-Push-Up.gif" alt="Archer Push Up">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ส่วนเนื้อหา Lv.4 -->
+    <section id="lv4" class="level-content">
+        <p class="level-description">ระดับสูง เข้าสู่วงการท่า Skills เริ่มท้าทายแรงโน้มถ่วง</p>
+        <div class="exercise-grid">
+            <div class="exercise-card">
+                <div class="exercise-info">
+                    <h3>Bar Muscle-Up</h3>
+                    <p>การดึงข้อผสมกับการดิปในจังหวะเดียว เปลี่ยนจากการอยู่ใต้บาร์ขึ้นไปอยู่เหนือบาร์</p>
+                    <span class="exercise-target">3 SETS / 3-5 REPS</span>
+                </div>
+                <div class="exercise-gif">
+                    <img src="https://fitnessprogramer.com/wp-content/uploads/2021/04/Muscle-Up.gif" alt="Muscle Up">
+                </div>
+            </div>
+            <div class="exercise-card">
+                <div class="exercise-info">
+                    <h3>Straddle Front Lever</h3>
+                    <p>กางขาออกเพื่อลดจุดศูนย์ถ่วง ดึงตัวให้ขนานกับพื้นด้วยความแข็งแรงของปีกหลัง</p>
+                    <span class="exercise-target">3 SETS / 10 SEC</span>
+                </div>
+                <div class="exercise-gif">
+                    <img src="https://fitnessprogramer.com/wp-content/uploads/2021/04/Straddle-Front-Lever.gif" alt="Front Lever">
+                </div>
+            </div>
+            <!-- ท่าใหม่ -->
+            <div class="exercise-card">
+                <div class="exercise-info">
+                    <h3>Tuck Planche</h3>
+                    <p>เก็บเข่าชิดอก แล้วใช้มือสองข้างดันพื้นพยุงตัวให้ลอยขึ้น เป็นจุดเริ่มต้นของการฝึกต้านแรงโน้มถ่วง</p>
+                    <span class="exercise-target">3 SETS / 10 SEC</span>
+                </div>
+                <div class="exercise-gif">
+                    <img src="https://fitnessprogramer.com/wp-content/uploads/2021/04/Tuck-Planche.gif" alt="Tuck Planche">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ส่วนเนื้อหา Lv.5 -->
+    <section id="lv5" class="level-content">
+        <p class="level-description">ระดับปรมาจารย์ ควบคุมร่างกายได้อย่างสมบูรณ์แบบ ทั้งความแข็งแรงและสมดุล</p>
+        <div class="exercise-grid">
+            <div class="exercise-card">
+                <div class="exercise-info">
+                    <h3>Full Planche</h3>
+                    <p>ยกตัวขนานกับพื้นโดยใช้เพียงสองมือต้านแรงโน้มถ่วง ขาเหยียดตึง</p>
+                    <span class="exercise-target">3 SETS / MAX HOLD</span>
+                </div>
+                <div class="exercise-gif">
+                    <img src="https://fitnessprogramer.com/wp-content/uploads/2021/04/Full-Planche.gif" alt="Full Planche">
+                </div>
+            </div>
+            <div class="exercise-card">
+                <div class="exercise-info">
+                    <h3>One Arm Pull-Up (OAP)</h3>
+                    <p>ดึงข้อโดยใช้แขนเพียงข้างเดียว สุดยอดแห่งความแข็งแรงของเส้นเอ็นและกล้ามเนื้อดึง</p>
+                    <span class="exercise-target">3 SETS / 1-2 REPS</span>
+                </div>
+                <div class="exercise-gif">
+                    <img src="https://fitnessprogramer.com/wp-content/uploads/2021/04/One-Arm-Pull-Up.gif" alt="One Arm Pull Up">
+                </div>
+            </div>
+            <!-- ท่าใหม่ -->
+            <div class="exercise-card">
+                <div class="exercise-info">
+                    <h3>Human Flag</h3>
+                    <p>จับเสาหรือบาร์แนวตั้ง แล้วยกตัวขึ้นให้ขนานกับพื้นเหมือนธง อาศัยแกนกลางลำตัวด้านข้างที่แข็งแกร่งขั้นสุด</p>
+                    <span class="exercise-target">3 SETS / MAX HOLD</span>
+                </div>
+                <div class="exercise-gif">
+                    <img src="https://fitnessprogramer.com/wp-content/uploads/2021/04/Human-Flag.gif" alt="Human Flag">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        &copy; 2026 CALISTHENICS MINIMAL MOVEMENT.
+    </footer>
+
+    <script>
+        const themeBtn = document.getElementById('themeBtn');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeText = document.getElementById('themeText');
+        const currentTheme = localStorage.getItem('theme');
+
+        if (currentTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            themeIcon.textContent = '☀️';
+            themeText.textContent = 'Light';
+        }
+
+        themeBtn.addEventListener('click', () => {
+            let theme = document.documentElement.getAttribute('data-theme');
+            if (theme === 'dark') {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light';
+            }
+        });
+
+        function showLevel(levelId) {
+            const contents = document.querySelectorAll('.level-content');
+            contents.forEach(content => content.classList.remove('active'));
+
+            const buttons = document.querySelectorAll('.level-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(levelId).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
